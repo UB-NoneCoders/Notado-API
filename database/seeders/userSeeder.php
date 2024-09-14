@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -18,5 +19,9 @@ class userSeeder extends Seeder
             ["name" => "pessoa2", "email" => "pessoa2@gmail.com", "password" => "12341234", "role_id" => "2"],
             ["name" => "pessoa3", "email" => "pessoa3@gmail.com", "password" => "12341234", "role_id" => "3"],
         ]);
+
+        User::factory()
+            ->count(25)
+            ->create();
     }
 }
