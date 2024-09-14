@@ -17,7 +17,7 @@ return new class extends Migration
             $table->integer('biminthly');
             $table->float('maximum_score');
             $table->float('test_score');
-            $table->foreignId('user_id')->constrained();
+            $table->foreignId('student_id')->constrained("users");
             $table->foreignId('subject_id')->constrained();
             $table->timestamps();
         });
