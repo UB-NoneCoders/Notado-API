@@ -11,13 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_subjects', function (Blueprint $table) {
+        Schema::create('scores', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->integer('biminthly');
-            $table->float('maximum_score');
             $table->float('test_score');
-            $table->foreignId('user_id')->constrained();
+            $table->foreignId('student_id')->constrained("users");
             $table->foreignId('subject_id')->constrained();
             $table->timestamps();
         });
@@ -28,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_subjects');
+        Schema::dropIfExists('scores');
     }
 };

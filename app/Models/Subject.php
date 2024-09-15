@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
 
 class Subject extends Model
 {
@@ -25,7 +27,7 @@ class Subject extends Model
     public function students(): BelongsToMany
     {
         return $this->belongsToMany(User::class,
-        "user_subject",
+        "scores",
         "subject_id",
         "student_id")
         ->withTimestamps();
@@ -40,5 +42,19 @@ class Subject extends Model
     {
         $this->students()->detach($id);
     }
+  
+    public function tests(): HasMany
+    {
+        return $this->hasMany(Test::class);
+    }
 
+    public function addTest($id)
+    {
+        $this->tests()->tests()->syncWithoutDetaching($id);
+    }
+
+    public function removeTest($id)
+    {
+        $this->tests()->tests()->detach($id);
+    }
 }

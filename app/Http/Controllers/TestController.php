@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\TestResource;
 use App\Models\Test;
+
 use Illuminate\Http\Request;
 
 class TestController extends Controller
@@ -21,7 +22,7 @@ class TestController extends Controller
      */
     public function create()
     {
-        // Optional: Implement this if you need a view for creating resources
+        // 
     }
 
     /**
@@ -40,6 +41,7 @@ class TestController extends Controller
     /**
      * Display the specified resource.
      */
+
     public function getTest($id)
     {
         $test = Test::findOrFail($id);
@@ -49,9 +51,10 @@ class TestController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Test $test)
+
+    public function edit(test $test)
     {
-        // Optional: Implement this if you need a view for editing resources
+        //
     }
 
     /**
@@ -66,6 +69,7 @@ class TestController extends Controller
     /**
      * Remove the specified resource from storage.
      */
+  
     public function destroy(Test $test)
     {
         $test->delete();
