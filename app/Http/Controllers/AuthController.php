@@ -40,10 +40,11 @@ class AuthController extends Controller
         $data = $request->validate([
             'role_id' => 'required|exists:roles,id',
         ]);
-
+    
         $user = User::find($id);
-        if($user) {
-            $user->addRole($data['role_id']);
+        if ($user) {
+            $user->role_id = $data['role_id'];
+            $user->save();
             return new UserResource($user);
         }
         return response(['error' => 'Usuário não encontrado.'], 404);
