@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Subject;
 use Illuminate\Http\Request;
 
@@ -71,6 +72,7 @@ class SubjectController extends Controller
 
     public function teste()
     {
-        $scores = Subject::all();
+        #$users = User::where('role_id', '=', 2)->get(); // Executes the query and fetches the users
+        #return response()->json(compact('users')); // Return the results as JSON
     }
 }
