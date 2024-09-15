@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\SubjectController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\SubjectController;
 
 Route::get('/', function () {
     return ['Laravel' => app()->version()];
