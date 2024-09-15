@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Subject;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -16,8 +17,13 @@ class TestFactory extends Factory
      */
     public function definition(): array
     {
+        $subjects = Subject::all()->pluck('id')->toArray();
+
         return [
-            //
+            "name" => fake()->sentence(3),
+            "bimonthly" => fake()->numberBetween(1,2),
+            "maximum_score" => fake()->numberBetween(1,10),
+            "subject_id" => fake()->randomElement($subjects)
         ];
     }
 }
