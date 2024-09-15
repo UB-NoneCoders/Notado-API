@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_subjects', function (Blueprint $table) {
+        Schema::create('score', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->integer('bimonthly');
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_subjects');
+        Schema::dropIfExists('score');
     }
 };
