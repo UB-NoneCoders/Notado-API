@@ -13,9 +13,6 @@ return new class extends Migration
     {
         Schema::create('score', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->integer('bimonthly');
-            $table->float('maximum_score');
             $table->float('test_score');
             $table->foreignId('student_id')->constrained("users");
             $table->foreignId('subject_id')->constrained();
