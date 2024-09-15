@@ -19,7 +19,6 @@ return new class extends Migration
             $table->foreignId('subject_id')->constrained();
             $table->timestamps();
         });
-
         Schema::table('scores', function (Blueprint $table) {
             $table->foreignId('test_id')
             ->constrained();

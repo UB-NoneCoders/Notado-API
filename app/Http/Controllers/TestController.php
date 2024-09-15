@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\test;
+use App\Http\Resources\TestResource;
+use App\Models\Test;
+
 use Illuminate\Http\Request;
 
 class TestController extends Controller
@@ -20,7 +22,7 @@ class TestController extends Controller
      */
     public function create()
     {
-        //
+        // 
     }
 
     /**
@@ -28,20 +30,28 @@ class TestController extends Controller
      */
     public function store(Request $request)
     {
-        //
+    $data = $request->all();
+
+    $test = Test::create($data);
+
+    $resource = new TestResource($test);
+    return $resource->response()->setStatusCode(201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(test $test)
+
+    public function getTest($id)
     {
-        //
+        $test = Test::findOrFail($id);
+        return new TestResource($test);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
+
     public function edit(test $test)
     {
         //
@@ -50,16 +60,19 @@ class TestController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, test $test)
+    public function update(Request $request, Test $test)
     {
-        //
+        $test->update($request->all());
+        return new TestResource($test);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(test $test)
+  
+    public function destroy(Test $test)
     {
-        //
+        $test->delete();
+        return response()->noContent();
     }
 }

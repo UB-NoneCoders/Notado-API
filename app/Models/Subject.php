@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+
 class Subject extends Model
 {
     use HasFactory;
@@ -41,7 +42,7 @@ class Subject extends Model
     {
         $this->students()->detach($id);
     }
-
+  
     public function tests(): HasMany
     {
         return $this->hasMany(Test::class);

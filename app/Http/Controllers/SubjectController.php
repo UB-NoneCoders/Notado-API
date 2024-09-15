@@ -8,7 +8,6 @@ use App\Http\Resources\SubjectResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-
 class SubjectController extends Controller
 {
     /**
@@ -30,6 +29,7 @@ class SubjectController extends Controller
         }
 
     }
+
     /**
      * Store a newly created resource in storage.
      */
@@ -83,6 +83,7 @@ class SubjectController extends Controller
     /**
      * Remove the specified resource from storage.
      */
+
     public function destroy(String $id)
     {
         Subject::find($id)->delete();
