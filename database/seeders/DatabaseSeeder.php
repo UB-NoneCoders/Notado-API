@@ -13,22 +13,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // DB::table('roles')->insert([
-        //     ['id' => 1, 'title' => 'Administrador'],
-        //     ['id' => 2, 'title' => 'Professor'],
-        //     ['id' => 3, 'title' => 'Aluno'],
-        // ]);
-
-        Role::create([
-            'title' => 'Administrador',
-        ]);
-
-        Role::create([
-            'title' => 'Professor',
-        ]);
-
-        Role::create([
-            'title' => 'Aluno',
+        $this->call([
+            roleSeeder::class,
+            userSeeder::class,
+            SubjectSeeder::class,
+            TestSeeder::class,
+            ScoreSeeder::class,
         ]);
     }
 }
