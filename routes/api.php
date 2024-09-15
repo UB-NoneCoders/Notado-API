@@ -34,8 +34,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/subjects/{id}', [SubjectController::class, 'destroy']); // Excluir uma disciplina
 
     // Controller de Testes
-    Route::get('/tests/{id}', [TestController::class, 'getTest']); // Exibir um teste específico
+    Route::get('/tests', [TestController::class, 'index']); // Listar todos os testes
     Route::post('/tests', [TestController::class, 'store']); // Criar um novo teste
+    Route::get('/tests/{id}', [TestController::class, 'getTest']); // Exibir um teste específico
     Route::put('/tests/{test}', [TestController::class, 'update']); // Atualizar um teste existente
     Route::delete('/tests/{test}', [TestController::class, 'destroy']); // Excluir um teste
 });
