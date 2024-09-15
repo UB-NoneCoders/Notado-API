@@ -4,9 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 
-class test extends Model
+class Test extends Model
 {
     use HasFactory;
 
@@ -16,5 +17,10 @@ class test extends Model
         'maximum_score',
         'subject_id',
     ];
+
+    public function score(): HasOne
+    {
+        return $this->hasOne(Score::class);
+    }
 }
 
