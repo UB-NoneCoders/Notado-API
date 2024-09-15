@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('user_subjects', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->integer('biminthly');
+            $table->integer('bimonthly');
             $table->float('maximum_score');
             $table->float('test_score');
             $table->foreignId('student_id')->constrained("users");
