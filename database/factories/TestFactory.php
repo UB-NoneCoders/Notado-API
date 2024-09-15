@@ -23,7 +23,7 @@ class TestFactory extends Factory
             "name" => fake()->sentence(3),
             "bimonthly" => fake()->numberBetween(1,2),
             "maximum_score" => fake()->numberBetween(1,10),
-            "subject_id" => fake()->randomElement($subjects)
+            "subject_id" => fake()->randomElement($subjects),
         ];
     }
 }

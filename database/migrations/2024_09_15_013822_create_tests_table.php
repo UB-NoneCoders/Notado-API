@@ -19,6 +19,11 @@ return new class extends Migration
             $table->foreignId('subject_id')->constrained();
             $table->timestamps();
         });
+
+        Schema::table('scores', function (Blueprint $table) {
+            $table->foreignId('test_id')
+            ->constrained();
+        });
     }
 
     /**
@@ -26,6 +31,11 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::table('scores', function (Blueprint $table) {
+            $table->dropForeign(['test_id']);
+            $table->dropColumn('test_id');
+        });
+
         Schema::dropIfExists('tests');
     }
 };
