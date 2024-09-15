@@ -4,8 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\TestResource;
 use App\Models\Test;
-
 use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Exception;
+
 
 class TestController extends Controller
 {
@@ -14,28 +18,67 @@ class TestController extends Controller
      */
     public function index()
     {
-        //
+        try {
+            // Attempt to retrieve all tests
+            $tests = Test::all();
+            
+            // Return the list of tests as JSON
+            return response()->json($tests);
+        } catch (Exception $e) {
+            // Handle any exceptions that occur during data retrieval
+            return response()->json([
+                'message' => 'An error occurred while retrieving the tests',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        // 
-    }
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-    $data = $request->all();
-
-    $test = Test::create($data);
-
-    $resource = new TestResource($test);
-    return $resource->response()->setStatusCode(201);
+        try {
+            // Validate the incoming request data (if you are using validation)
+            $validatedData = $request->validate([
+                'name' => 'required|string|max:255',
+                'bimonthly' => 'required|integer',  // Add validation for 'bimonthly'
+                'maximum_score' => 'required|numeric',
+                "subject_id"=> 'required|integer',
+                // Add other validation rules as needed
+            ]);
+    
+            // Create the new Test record
+            $test = Test::create($validatedData);
+    
+            // Wrap the created Test record in a resource
+            $resource = new TestResource($test);
+    
+            // Return the resource with a success message and a 201 status code
+            return response()->json([
+                'message' => 'Test created successfully.',
+                'data' => $resource
+            ], 201);
+        } catch (ValidationException $e) {
+            // Handle validation errors
+            return response()->json([
+                'message' => 'Validation error.',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (QueryException $e) {
+            // Handle database errors
+            return response()->json([
+                'message' => 'Database error.',
+                'error' => $e->getMessage()
+            ], 500);
+        } catch (Exception $e) {
+            // Handle any other exceptions
+            return response()->json([
+                'message' => 'An error occurred while creating the test.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -44,17 +87,24 @@ class TestController extends Controller
 
     public function getTest($id)
     {
-        $test = Test::findOrFail($id);
-        return new TestResource($test);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-
-    public function edit(test $test)
-    {
-        //
+        try {
+            // Attempt to find the test by ID
+            $test = Test::findOrFail($id);
+    
+            // Wrap the found Test record in a resource
+            return new TestResource($test);
+        } catch (ModelNotFoundException $e) {
+            // Handle the case where the test is not found
+            return response()->json([
+                'message' => 'Test not found.',
+            ], 404);
+        } catch (Exception $e) {
+            // Handle any other exceptions
+            return response()->json([
+                'message' => 'An error occurred while retrieving the test.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     /**
@@ -62,8 +112,40 @@ class TestController extends Controller
      */
     public function update(Request $request, Test $test)
     {
-        $test->update($request->all());
-        return new TestResource($test);
+        try {
+            // Validate the incoming request data
+            $validatedData = $request->validate([
+                'name' => 'required|string|max:255',
+                'bimonthly' => 'required|integer',  // Add validation for 'bimonthly'
+                'maximum_score' => 'required|numeric',
+                "subject_id"=> 'required|integer',
+                // Add other validation rules as needed
+            ]);
+    
+            // Update the test record with the validated data
+            $test->update($validatedData);
+    
+            // Wrap the updated Test record in a resource
+            return new TestResource($test);
+        } catch (ValidationException $e) {
+            // Handle validation errors
+            return response()->json([
+                'message' => 'Validation error.',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (QueryException $e) {
+            // Handle database errors
+            return response()->json([
+                'message' => 'Database error.',
+                'error' => $e->getMessage()
+            ], 500);
+        } catch (Exception $e) {
+            // Handle any other exceptions
+            return response()->json([
+                'message' => 'An error occurred while updating the test.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -72,7 +154,26 @@ class TestController extends Controller
   
     public function destroy(Test $test)
     {
-        $test->delete();
-        return response()->noContent();
+        try {
+            // Attempt to delete the test record
+            $test->delete();
+    
+            // Return a successful response with no content
+            return response()->json([
+                'message' => 'Test deleted successfully.',
+            ], 200);
+        } catch (QueryException $e) {
+            // Handle database errors, such as foreign key constraint violations
+            return response()->json([
+                'message' => 'Database error. Could not delete the test.',
+                'error' => $e->getMessage()
+            ], 500);
+        } catch (Exception $e) {
+            // Handle any other exceptions
+            return response()->json([
+                'message' => 'An error occurred while deleting the test.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }
