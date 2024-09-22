@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->float('test_score');
             $table->foreignId('student_id')->constrained("users");
-            $table->foreignId('subject_id')->constrained();
             $table->timestamps();
         });
     }
