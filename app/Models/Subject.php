@@ -27,7 +27,7 @@ class Subject extends Model
     public function students(): BelongsToMany
     {
         return $this->belongsToMany(User::class,
-        "scores",
+        "subject_users",
         "subject_id",
         "student_id")
         ->withTimestamps();

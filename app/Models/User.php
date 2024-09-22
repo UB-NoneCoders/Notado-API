@@ -52,4 +52,13 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Role::class);
     }
+
+    public function subjects(): BelongsToMany
+    {
+        return $this->belongsToMany(Subject::class,
+        "subject_users",
+        "student_id",
+        "subject_id")
+        ->withTimestamps();
+    }
 }

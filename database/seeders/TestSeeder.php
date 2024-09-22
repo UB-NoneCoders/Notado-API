@@ -12,7 +12,8 @@ class TestSeeder extends Seeder
      * Run the database seeds.
      */
     public function run(): void
-    {
+    {   
+        #Test::factory()->bimonthly(3)->hasProva(5)->create();
         $subjects = Subject::all();
 
         foreach ($subjects as $subject) {

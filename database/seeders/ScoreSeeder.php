@@ -30,7 +30,6 @@ class ScoreSeeder extends Seeder
                     DB::table('scores')->insert([
                         "test_score" => fake()->numberBetween(0,$test->maximum_score),
                         "student_id" => $student_subject->id,
-                        "subject_id" => $subject->id,
                         "test_id" => $test->id,
                     ]);
                 }
