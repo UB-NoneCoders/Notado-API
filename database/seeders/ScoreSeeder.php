@@ -16,13 +16,9 @@ class ScoreSeeder extends Seeder
     public function run(): void
     {   
         $subjects = Subject::all();
-        $students = User::where('role_id', '=', 1)->get();
         
         foreach ($subjects as $subject) {
-            $students_subject = fake()->randomElements(
-                $students,
-                fake()->numberBetween(3,sizeof($students))
-            );
+            $students_subject = $subject->students;
             $tests = $subject->tests;
 
             foreach ($tests as $test) {

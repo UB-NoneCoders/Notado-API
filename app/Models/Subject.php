@@ -33,9 +33,11 @@ class Subject extends Model
         ->withTimestamps();
     }
 
-    public function addStudent($id)
+    public function addStudent($ids)
     {
-        $this->students()->syncWithoutDetaching([$id]);
+        foreach ($ids as $id) {
+            $this->students()->syncWithoutDetaching([$id]);
+        }
     }
 
     public function removeStudent($id)
