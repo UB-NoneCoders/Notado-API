@@ -27,15 +27,17 @@ class Subject extends Model
     public function students(): BelongsToMany
     {
         return $this->belongsToMany(User::class,
-        "scores",
+        "subject_users",
         "subject_id",
         "student_id")
         ->withTimestamps();
     }
 
-    public function addStudent($id)
+    public function addStudent($ids)
     {
-        $this->students()->syncWithoutDetaching([$id]);
+        foreach ($ids as $id) {
+            $this->students()->syncWithoutDetaching([$id]);
+        }
     }
 
     public function removeStudent($id)
