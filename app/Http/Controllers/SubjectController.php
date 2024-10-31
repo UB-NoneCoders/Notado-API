@@ -10,47 +10,40 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Exception;
 
-
-
 class SubjectController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Exibir uma lista do recurso.
      */
     public function index()
     {
         $subjects = Subject::get();
-        
-        if ($subjects->count() > 0)
-        {
-            return SubjectResource::collection($subjects);
-        }
-        else
-        {
-            response()->json([
-                "message" => "No record available"
-            ],200);
-        }
 
+        if ($subjects->count() > 0) {
+            return SubjectResource::collection($subjects);
+        } else {
+            return response()->json([
+                "message" => "Nenhum registro disponível"
+            ], 200);
+        }
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Armazenar um novo recurso no armazenamento.
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(),[
-            "name"      => "required|string|max:200",
-            "status"    => "required|boolean",
-            "teacher_id"=> "required|integer",
+        $validator = Validator::make($request->all(), [
+            "name" => "required|string|max:200",
+            "status" => "required|boolean",
+            "teacher_id" => "required|integer",
         ]);
 
-        if($validator->fails())
-        {
+        if ($validator->fails()) {
             return response()->json([
-                "message" => "Not all fields are right",
+                "message" => "Nem todos os campos estão corretos",
                 "error" => $validator->messages(),
-            ],422);
+            ], 422);
         }
 
         $subject = Subject::create([
@@ -60,91 +53,81 @@ class SubjectController extends Controller
         ]);
 
         return response()->json([
-            "message" => "Subject created successfully",
+            "message" => "Disciplina criada com sucesso",
             "data" => new SubjectResource($subject),
-        ],200);
+        ], 200);
     }
 
     /**
-     * Display the specified resource.
+     * Exibir o recurso especificado.
      */
     public function show($id)
     {
         try {
-            // Attempt to find the subject by ID
             $subject = Subject::findOrFail($id);
-            // Return the subject wrapped in a resource
-            return new SubjectResource($subject);
 
+            return new SubjectResource($subject);
         } catch (ModelNotFoundException) {
-            // Handle the case where the subject is not found
             return response()->json([
-                'message' => 'Subject not found'
+                'message' => 'Disciplina não encontrada'
             ], 404);
         }
     }
 
     /**
-     * Update the specified resource in storage.
+     * Atualizar o recurso especificado no armazenamento.
      */
-    public function update(Request $request, String $id)
+    public function update(Request $request, string $id)
     {
         try {
-            // Attempt to find the subject by ID
+            $validator = Validator::make($request->all(), [
+                "name" => "required|string|max:200",
+                "status" => "required|boolean",
+                "teacher_id" => "required|integer",
+            ]);
+
             $subject = Subject::findOrFail($id);
-            
-            // Perform the update
+
             $subject->update($request->all());
-            
-            // Return the updated subject wrapped in a resource
+
             return new SubjectResource($subject);
         } catch (ModelNotFoundException $e) {
-            // Handle the case where the subject is not found
             return response()->json([
-                'message' => 'Subject not found'
+                'message' => 'Disciplina não encontrada'
             ], 404);
-        } catch (\Exception $e) {
-            // Handle any other exceptions during the update
+        } catch (Exception $e) {
             return response()->json([
-                'message' => 'An error occurred while updating the subject',
+                'message' => 'Ocorreu um erro ao atualizar a disciplina',
                 'error' => $e->getMessage()
             ], 500);
         }
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remover o recurso especificado do armazenamento.
      */
-
-    public function destroy(String $id)
+    public function destroy(string $id)
     {
         try {
-            // Attempt to find the subject by ID
             $subject = Subject::findOrFail($id);
-            
-            // Delete related records in 'scores' and 'tests' tables first
+
             \DB::table('scores')->where('subject_id', $id)->delete();
             \DB::table('tests')->where('subject_id', $id)->delete();
-            
-            // Now delete the subject
+
             $subject->delete();
-            
-            // Return a success response
+
             return response()->json([
-                'message' => 'Subject and related records deleted successfully',
+                'message' => 'Disciplina e registros relacionados excluídos com sucesso',
             ], 200);
         } catch (ModelNotFoundException $e) {
-            // Handle the case where the subject is not found
             return response()->json([
-                'message' => 'Subject not found',
+                'message' => 'Disciplina não encontrada',
             ], 404);
         } catch (Exception $e) {
-            // Handle any other exceptions during the deletion
             return response()->json([
-                'message' => 'An error occurred while deleting the subject',
+                'message' => 'Ocorreu um erro ao excluir a disciplina',
                 'error' => $e->getMessage(),
             ], 500);
         }
     }
-
 }

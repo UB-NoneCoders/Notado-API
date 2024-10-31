@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\TestResource;
+use App\Models\Score;
 use App\Models\Test;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
@@ -10,170 +11,172 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Exception;
 
-
 class TestController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Exibir uma lista do recurso.
      */
     public function index()
     {
         try {
-            // Attempt to retrieve all tests
             $tests = Test::all();
-            
-            // Return the list of tests as JSON
+
             return response()->json($tests);
         } catch (Exception $e) {
-            // Handle any exceptions that occur during data retrieval
             return response()->json([
-                'message' => 'An error occurred while retrieving the tests',
+                'message' => 'Ocorreu um erro ao recuperar os testes',
                 'error' => $e->getMessage(),
             ], 500);
         }
     }
 
-
     /**
-     * Store a newly created resource in storage.
+     * Armazenar um novo recurso no armazenamento.
      */
     public function store(Request $request)
     {
         try {
-            // Validate the incoming request data (if you are using validation)
             $validatedData = $request->validate([
                 'name' => 'required|string|max:255',
-                'bimonthly' => 'required|integer',  // Add validation for 'bimonthly'
+                'bimonthly' => 'required|integer',
                 'maximum_score' => 'required|numeric',
-                "subject_id"=> 'required|integer',
-                // Add other validation rules as needed
+                "subject_id" => 'required|integer',
             ]);
-    
-            // Create the new Test record
+
             $test = Test::create($validatedData);
-    
-            // Wrap the created Test record in a resource
+
             $resource = new TestResource($test);
-    
-            // Return the resource with a success message and a 201 status code
+
             return response()->json([
-                'message' => 'Test created successfully.',
+                'message' => 'Teste criado com sucesso.',
                 'data' => $resource
             ], 201);
         } catch (ValidationException $e) {
-            // Handle validation errors
             return response()->json([
-                'message' => 'Validation error.',
+                'message' => 'Erro de validação.',
                 'errors' => $e->errors()
             ], 422);
         } catch (QueryException $e) {
-            // Handle database errors
             return response()->json([
-                'message' => 'Database error.',
+                'message' => 'Erro no banco de dados.',
                 'error' => $e->getMessage()
             ], 500);
         } catch (Exception $e) {
-            // Handle any other exceptions
             return response()->json([
-                'message' => 'An error occurred while creating the test.',
+                'message' => 'Ocorreu um erro ao criar o teste.',
                 'error' => $e->getMessage()
             ], 500);
         }
     }
 
     /**
-     * Display the specified resource.
+     * Exibir o recurso especificado.
      */
-
     public function getTest($id)
     {
         try {
-            // Attempt to find the test by ID
             $test = Test::findOrFail($id);
-    
-            // Wrap the found Test record in a resource
+
             return new TestResource($test);
         } catch (ModelNotFoundException $e) {
-            // Handle the case where the test is not found
             return response()->json([
-                'message' => 'Test not found.',
+                'message' => 'Teste não encontrado.',
             ], 404);
         } catch (Exception $e) {
-            // Handle any other exceptions
             return response()->json([
-                'message' => 'An error occurred while retrieving the test.',
+                'message' => 'Ocorreu um erro ao recuperar o teste.',
                 'error' => $e->getMessage(),
             ], 500);
         }
     }
 
     /**
-     * Update the specified resource in storage.
+     * Atualizar o recurso especificado no armazenamento.
      */
     public function update(Request $request, Test $test)
     {
         try {
-            // Validate the incoming request data
             $validatedData = $request->validate([
                 'name' => 'required|string|max:255',
-                'bimonthly' => 'required|integer',  // Add validation for 'bimonthly'
+                'bimonthly' => 'required|integer',
                 'maximum_score' => 'required|numeric',
-                "subject_id"=> 'required|integer',
-                // Add other validation rules as needed
+                "subject_id" => 'required|integer',
             ]);
-    
-            // Update the test record with the validated data
+
             $test->update($validatedData);
-    
-            // Wrap the updated Test record in a resource
+
             return new TestResource($test);
         } catch (ValidationException $e) {
-            // Handle validation errors
             return response()->json([
-                'message' => 'Validation error.',
+                'message' => 'Erro de validação.',
                 'errors' => $e->errors()
             ], 422);
         } catch (QueryException $e) {
-            // Handle database errors
             return response()->json([
-                'message' => 'Database error.',
+                'message' => 'Erro no banco de dados.',
                 'error' => $e->getMessage()
             ], 500);
         } catch (Exception $e) {
-            // Handle any other exceptions
             return response()->json([
-                'message' => 'An error occurred while updating the test.',
+                'message' => 'Ocorreu um erro ao atualizar o teste.',
                 'error' => $e->getMessage()
             ], 500);
         }
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remover o recurso especificado do armazenamento.
      */
-  
     public function destroy(Test $test)
     {
         try {
-            // Attempt to delete the test record
             $test->delete();
-    
-            // Return a successful response with no content
+
             return response()->json([
-                'message' => 'Test deleted successfully.',
+                'message' => 'Teste excluído com sucesso.',
             ], 200);
         } catch (QueryException $e) {
-            // Handle database errors, such as foreign key constraint violations
             return response()->json([
-                'message' => 'Database error. Could not delete the test.',
+                'message' => 'Erro no banco de dados. Não foi possível excluir o teste.',
                 'error' => $e->getMessage()
             ], 500);
         } catch (Exception $e) {
-            // Handle any other exceptions
             return response()->json([
-                'message' => 'An error occurred while deleting the test.',
+                'message' => 'Ocorreu um erro ao excluir o teste.',
                 'error' => $e->getMessage()
             ], 500);
         }
+    }
+
+    public function giveScore(Request $request)
+    {
+        $validatedData = $request->validate([
+            'student_id' => 'required|exists:users,id',
+            'test_id' => 'required|exists:tests,id',
+            'test_score' => 'required|numeric|min:0|max:10',
+        ]);
+
+        $score = Score::where('student_id', $request->student_id)
+            ->where('test_id', $request->test_id)
+            ->first();
+
+        if ($score) {
+            $score->test_score = $request->test_score;
+            $score->updated_at = now();
+            $score->save();
+        } else {
+            $score = new Score;
+            $score->student_id = $request->student_id;
+            $score->test_id = $request->test_id;
+            $score->test_score = $request->test_score;
+            $score->created_at = now();
+            $score->updated_at = now();
+            $score->save();
+        }
+
+        return response()->json([
+            'message' => 'Nota registrada com sucesso!',
+            'data' => $score
+        ]);
     }
 }
