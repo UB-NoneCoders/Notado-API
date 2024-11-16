@@ -18,14 +18,14 @@ class SubjectFactory extends Factory
      */
 
     protected $model = Subject::class;
-    
+
 
     public function definition()
     {
         $teachers = User::where('role_id', '=', 2)->pluck('id')->toArray();
-        
+
         return [
-            'name' => $this->faker->word(),          // Nome fictício de matéria para a coluna 'name'
+            'name' => $this->faker->randomElement(["Linguagens", "Ciências Humanas", "Ciências da Natureza", "Matemática", "Redação"]),
             'status' => $this->faker->boolean(),     // Status como true/false (ativo/inativo)
             'teacher_id' => $this->faker->randomElement($teachers),
         ];
