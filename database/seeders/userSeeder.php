@@ -14,7 +14,18 @@ class userSeeder extends Seeder
     public function run(): void
     {
         User::factory()
-            ->count(25)
+            ->count(100)
+            ->state(["role_id" => 1])
+            ->create();
+
+        User::factory()
+            ->count(5)
+            ->state(["role_id" => 2])
+            ->create();
+
+        User::factory()
+            ->count(2)
+            ->state(["role_id" => 3])
             ->create();
     }
 }
